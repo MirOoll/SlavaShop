@@ -1,0 +1,10 @@
+/*.csproj
+/*.sln
+/.vs
+/Library
+/obj
+/Temp
+.idea/
+_Builds/
+/Assets/GeneratedLocalRepo
+Assets/GeneratedLocalRepo.meta
