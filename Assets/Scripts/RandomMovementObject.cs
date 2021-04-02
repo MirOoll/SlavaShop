@@ -14,9 +14,15 @@ public class RandomMovementObject : MonoBehaviour
         rb.useGravity = false;
     }
 
-    // Update is called once per frame
+    Vector3 oldPosition;
+    Vector3 newPosition;
     void Update()
     {
+        
+        while (transform.position != newPosition)
+        {
+            transform.position = Vector3.Lerp(oldPosition, newPosition, 2f);
+        }
         
     }
 
@@ -29,17 +35,19 @@ public class RandomMovementObject : MonoBehaviour
     {
         getRandomMovement();
     }
+    private Vector3 vec;
     private void getRandomMovement()
     {
-        
-        Vector3 targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f) * Time.deltaTime);
-        rb.MovePosition(rb.position + targetPosition);
+        //Vector3.Lerp(Vector3(gameObject.transform, gameObject.transform, gameObject.transform),)
+        //Vector3 targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        //rb.MovePosition(rb.position + targetPosition * Time.deltaTime);
         //StartCoroutine(delayChangeMovement());
         //getRandomMovement();
     }
 
     private void FixedUpdate()
     {
-        getRandomMovement();
+        //getRandomMovement();
+
     }
 }
