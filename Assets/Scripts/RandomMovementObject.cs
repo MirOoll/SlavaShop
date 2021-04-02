@@ -6,48 +6,73 @@ public class RandomMovementObject : MonoBehaviour
 {
 
     public GameObject[] childrenObjects;
-    public Rigidbody rb;
+    private Rigidbody rb;
+    public float force = 3f;
+    private bool isMove = false;
+
+    Vector3 startPosition;
+
+    private Vector3 direction;
+
+    private float delay = 0.1f;
+
+    [SerializeField]
+    private float minDelay = 1f;
+    [SerializeField]
+    private float maxDelay = 3f;
+    [SerializeField]
+    private float maxDistance = 2f;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         rb.useGravity = false;
+        startPosition = transform.position;
+        StartCoroutine(DelayChangeMovement());
     }
 
-    Vector3 oldPosition;
-    Vector3 newPosition;
+    
     void Update()
     {
-        
-        while (transform.position != newPosition)
+        if (isMove)
         {
-            transform.position = Vector3.Lerp(oldPosition, newPosition, 2f);
+            bool isMaxDistance = Vector3.Distance(startPosition, transform.position) > maxDistance;
+            if (isMaxDistance)
+            {
+                var velocity = rb.velocity;
+                rb.velocity = Vector3.zero;
+                rb.AddForce(velocity * -1, ForceMode.Impulse);
+            }
         }
-        
     }
 
-    IEnumerator delayChangeMovement()
+    private Vector3 GetRandomDirection()
     {
-        yield return new WaitForSeconds(2f);
+        return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
     }
 
-    private void startRandomMoving()
+    IEnumerator DelayChangeMovement()
     {
-        getRandomMovement();
-    }
-    private Vector3 vec;
-    private void getRandomMovement()
-    {
-        //Vector3.Lerp(Vector3(gameObject.transform, gameObject.transform, gameObject.transform),)
-        //Vector3 targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-        //rb.MovePosition(rb.position + targetPosition * Time.deltaTime);
-        //StartCoroutine(delayChangeMovement());
-        //getRandomMovement();
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            if (minDelay >= maxDelay)
+            {
+                delay = minDelay;
+            }
+            else delay = Random.Range(minDelay, maxDelay);
+
+            rb.velocity = Vector3.zero;
+            direction = GetRandomDirection();
+                //rb.velocity = Vector3.zero;
+            rb.AddForce(direction * force, ForceMode.Impulse);
+            isMove = true;
+        }     
     }
 
-    private void FixedUpdate()
-    {
-        //getRandomMovement();
-
-    }
 }
