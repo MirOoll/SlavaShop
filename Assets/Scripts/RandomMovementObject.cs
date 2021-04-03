@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class RandomMovementObject : MonoBehaviour
 {
-
     public GameObject[] childrenObjects;
+    private GameObject[] lines;
+
     private Rigidbody rb;
     public float force = 3f;
     private bool isMove = false;
@@ -28,11 +29,16 @@ public class RandomMovementObject : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         rb.useGravity = false;
         startPosition = transform.position;
+
+        for (int i = 0; i < childrenObjects.Length; i++)
+        {
+            
+        }
+
         StartCoroutine(DelayChangeMovement());
     }
 
@@ -49,6 +55,17 @@ public class RandomMovementObject : MonoBehaviour
                 rb.AddForce(velocity * -1, ForceMode.Impulse);
             }
         }
+        //if (isMove)
+        //{
+        //    bool isMaxDistance = Vector3.Distance(startPosition, transform.position) > maxDistance;
+        //    if (isMaxDistance)
+        //    {
+        //        var velocity = rb.velocity;
+        //        rb.velocity = Vector3.zero;
+        //        rb.AddForce(velocity * -1 * force, ForceMode.Impulse);
+        //    }
+        //}
+
     }
 
     private Vector3 GetRandomDirection()
@@ -69,7 +86,7 @@ public class RandomMovementObject : MonoBehaviour
 
             rb.velocity = Vector3.zero;
             direction = GetRandomDirection();
-                //rb.velocity = Vector3.zero;
+                rb.velocity = Vector3.zero;
             rb.AddForce(direction * force, ForceMode.Impulse);
             isMove = true;
         }     
