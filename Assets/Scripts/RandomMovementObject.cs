@@ -1,11 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class RandomMovementObject : MonoBehaviour
 {
+    public GameObject parent;
     public GameObject[] childrenObjects;
     private GameObject[] lines;
+    private LineRenderer line;
+
+    float startDistance;
 
     private Rigidbody rb;
     public float force = 3f;
@@ -27,17 +32,13 @@ public class RandomMovementObject : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
     }
 
     void Start()
     {
-        rb.useGravity = false;
+        startDistance = Vector3.Distance(parent.transform.position, transform.position);
         startPosition = transform.position;
-
-        for (int i = 0; i < childrenObjects.Length; i++)
-        {
-            
-        }
 
         StartCoroutine(DelayChangeMovement());
     }
@@ -47,7 +48,10 @@ public class RandomMovementObject : MonoBehaviour
     {
         if (isMove)
         {
-            bool isMaxDistance = Vector3.Distance(startPosition, transform.position) > maxDistance;
+            float currentDistant = Math.Abs(Vector3.Distance(parent.transform.position, transform.position));
+
+            bool isMaxDistance = startDistance > (currentDistant + maxDistance) || startDistance < (currentDistant - maxDistance);
+            //bool isMaxDistance = Vector3.Distance(startPosition, transform.parent.position) > maxDistance;
             if (isMaxDistance)
             {
                 var velocity = rb.velocity;
@@ -55,6 +59,8 @@ public class RandomMovementObject : MonoBehaviour
                 rb.AddForce(velocity * -1, ForceMode.Impulse);
             }
         }
+        line.SetPosition(0, transform.position);
+        line.SetPosition(1, childrenObjects[0].transform.position);
         //if (isMove)
         //{
         //    bool isMaxDistance = Vector3.Distance(startPosition, transform.position) > maxDistance;
@@ -70,7 +76,7 @@ public class RandomMovementObject : MonoBehaviour
 
     private Vector3 GetRandomDirection()
     {
-        return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        return new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
     }
 
     IEnumerator DelayChangeMovement()
@@ -82,7 +88,7 @@ public class RandomMovementObject : MonoBehaviour
             {
                 delay = minDelay;
             }
-            else delay = Random.Range(minDelay, maxDelay);
+            else delay = UnityEngine.Random.Range(minDelay, maxDelay);
 
             rb.velocity = Vector3.zero;
             direction = GetRandomDirection();
