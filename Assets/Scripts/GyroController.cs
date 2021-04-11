@@ -9,7 +9,15 @@ public class GyroController : MonoBehaviour
 
     private GameObject cameraContainer;
     private Quaternion rot;
-    
+
+    public bool zooming;
+    public float zoomSpeed;
+    private Camera camera;
+
+    private void Awake()
+    {
+        camera.GetComponent<Camera>();
+    }
     void Start()
     {
         cameraContainer = new GameObject("Camera Container");
@@ -24,6 +32,13 @@ public class GyroController : MonoBehaviour
         {
             transform.localRotation = gyro.attitude * rot;
         }
+        if (zooming)
+        {
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            float zoomDistance = zoomSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+            camera.transform.Translate(ray.direction * zoomDistance, Space.World);
+        }
+
     }
 
     private bool EnableGyro()

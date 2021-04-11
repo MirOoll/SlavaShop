@@ -43,7 +43,6 @@ public class RandomMovementObject : MonoBehaviour
         StartCoroutine(DelayChangeMovement());
     }
 
-    
     void Update()
     {
         if (isMove)
