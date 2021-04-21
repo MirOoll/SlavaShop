@@ -58,8 +58,8 @@ public class RandomMovementObject : MonoBehaviour
                 rb.AddForce(velocity * -1, ForceMode.Impulse);
             }
         }
-        line.SetPosition(0, transform.position);
-        line.SetPosition(1, childrenObjects[0].transform.position);
+        //line.SetPosition(0, transform.position);
+        //line.SetPosition(1, childrenObjects[0].transform.position);
         //if (isMove)
         //{
         //    bool isMaxDistance = Vector3.Distance(startPosition, transform.position) > maxDistance;
