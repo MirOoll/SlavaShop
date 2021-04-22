@@ -59,17 +59,18 @@ public class CameraFly : MonoBehaviour
         if (isCounting)
         {
             countdownBeforeZoom -= Time.deltaTime;
-            Debug.LogWarning(countdownBeforeZoom);
-            
+            //Debug.Log(countdownBeforeZoom);
+
         }
         else
         {
-            isCounting = false;
+            //isCounting = false;
             countdownBeforeZoom = timer;
         }
         if (countdownBeforeZoom <= 0)
         {
             StartCoroutine(ZoomTo());
+            countdownBeforeZoom = timer;
             //isCounting = false;
             //currentMovementTime += Time.deltaTime;
             //transform.position = Vector3.Lerp(originalPosition, originalPosition - new Vector3(1f, 1f, 1f), currentMovementTime/totalMovementTime);
@@ -87,16 +88,27 @@ public class CameraFly : MonoBehaviour
 
     IEnumerator ZoomTo()
     {
-        isCounting = false;
-        while(originalPosition != newPosition)
+        //isCounting = false;
+
+        while (currentMovementTime < totalMovementTime)
         {
+            if (Vector3.Distance(gameObject.transform.position, lookingGameObject.transform.position) <= 1.7f)
+            {
+                currentMovementTime = totalMovementTime;
+                break;
+            }
+            transform.position = Vector3.Lerp(originalPosition, lookingGameObject.transform.position, currentMovementTime / totalMovementTime);
             currentMovementTime += Time.deltaTime;
-            transform.position = Vector3.Lerp(originalPosition, originalPosition - new Vector3(1f, 1f, 1f), currentMovementTime / totalMovementTime);
+            yield return null;// Vector3.Distance(originalPosition, lookingGameObject.transform.position);
         }
+
         
+        
+        transform.parent = lookingGameObject.transform;
+
         //countdown = timer;
         Debug.LogWarning("countdown FINISH+++++++++++++++++");
-        yield return null;
+        
     }
     public string ReleaseRay()
     {
@@ -105,10 +117,12 @@ public class CameraFly : MonoBehaviour
         // Запись объекта, в который пришел луч, в переменную
         RaycastHit hit;
         Physics.Raycast(ray, out hit);
-        if (hit.collider.tag == "1" && transform.position == originalPosition)
+        if (hit.collider.tag == "1" && transform.position == originalPosition) // ИЗ-ЗА ЭТОГО СНОВА НЕ ЗАПУСКАЕТ ТАЙМЕР
         {
             isCounting = true;
-            lookingGameObject = gameObject;
+            lookingGameObject = hit.transform.gameObject;
+            //Debug.Log(lookingGameObject.name);
+
             //while (isCounting)
             //{
             //    countdown -= Time.deltaTime;
