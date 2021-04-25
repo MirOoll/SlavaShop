@@ -15,6 +15,7 @@ public class RandomMovementObject : MonoBehaviour
     private Rigidbody rb;
     public float force = 3f;
     private bool isMove = false;
+    private bool isCoroutineStart = false;
 
     Vector3 startPosition;
 
@@ -45,6 +46,30 @@ public class RandomMovementObject : MonoBehaviour
 
     void Update()
     {
+        if (transform.Find("Main Camera"))
+        {
+            if (childrenObjects[0].activeSelf == false && isCoroutineStart == false)
+            {
+                Debug.LogWarning("ВКЛЮЧАЕМ");
+                childrenObjects[0].SetActive(true);
+                isCoroutineStart = true;
+            }
+            if (isCoroutineStart)
+            {
+                startDistance = Vector3.Distance(parent.transform.position, transform.position);
+                startPosition = transform.position;
+
+                StartCoroutine(DelayChangeMovement());
+                isCoroutineStart = false;
+            }
+
+        }
+        else
+        {
+            childrenObjects[0].SetActive(false);
+            isCoroutineStart = false;
+        }
+
         if (isMove)
         {
             float currentDistant = Math.Abs(Vector3.Distance(parent.transform.position, transform.position));
@@ -58,6 +83,8 @@ public class RandomMovementObject : MonoBehaviour
                 rb.AddForce(velocity * -1, ForceMode.Impulse);
             }
         }
+
+        
         //line.SetPosition(0, transform.position);
         //line.SetPosition(1, childrenObjects[0].transform.position);
         //if (isMove)

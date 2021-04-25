@@ -91,7 +91,7 @@ public class CameraFly : MonoBehaviour
         //transfer += transform.right * Input.GetAxis("Horizontal");
         //transform.position += transfer * speed * Time.deltaTime;
     }
-
+    
     IEnumerator ZoomIn()
     {
         while (currentMovementTime < totalMovementTime)
