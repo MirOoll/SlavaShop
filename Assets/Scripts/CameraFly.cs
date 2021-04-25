@@ -69,13 +69,19 @@ public class CameraFly : MonoBehaviour
         }
         if (countdownBeforeZoom <= 0)
         {
-            StartCoroutine(ZoomTo());
-            countdownBeforeZoom = timer;
-            //isCounting = false;
-            //currentMovementTime += Time.deltaTime;
-            //transform.position = Vector3.Lerp(originalPosition, originalPosition - new Vector3(1f, 1f, 1f), currentMovementTime/totalMovementTime);
-            ////countdown = timer;
-            //Debug.LogWarning("countdown FINISH+++++++++++++++++");
+            if (transform.position == originalPosition)
+            {
+                Debug.LogError("ZoomIn");
+                StartCoroutine(ZoomIn());
+                countdownBeforeZoom = timer;
+            }
+            if (transform.position != originalPosition)
+            {
+                Debug.LogError("ZoomOut");
+                StartCoroutine(ZoomOut());
+                countdownBeforeZoom = timer;
+            }
+
 
         }
 
@@ -86,10 +92,8 @@ public class CameraFly : MonoBehaviour
         //transform.position += transfer * speed * Time.deltaTime;
     }
 
-    IEnumerator ZoomTo()
+    IEnumerator ZoomIn()
     {
-        //isCounting = false;
-
         while (currentMovementTime < totalMovementTime)
         {
             if (Vector3.Distance(gameObject.transform.position, lookingGameObject.transform.position) <= 1.7f)
@@ -99,17 +103,32 @@ public class CameraFly : MonoBehaviour
             }
             transform.position = Vector3.Lerp(originalPosition, lookingGameObject.transform.position, currentMovementTime / totalMovementTime);
             currentMovementTime += Time.deltaTime;
+            yield return null;
+        }
+        currentMovementTime = 0;
+        transform.parent = lookingGameObject.transform;
+        Debug.LogWarning("countdown FINISH+++++++++++++++++");   
+    }
+
+    IEnumerator ZoomOut()
+    {
+        transform.parent = null;
+        while (currentMovementTime < totalMovementTime)
+        {
+            //if (Vector3.Distance(gameObject.transform.position, lookingGameObject.transform.position) <= 1.7f)
+            //{
+            //    currentMovementTime = totalMovementTime;
+            //    break;
+            //}
+            transform.position = Vector3.Lerp(transform.position, originalPosition, currentMovementTime / totalMovementTime);
+            currentMovementTime += Time.deltaTime;
             yield return null;// Vector3.Distance(originalPosition, lookingGameObject.transform.position);
         }
 
-        
-        
-        transform.parent = lookingGameObject.transform;
-
-        //countdown = timer;
+        currentMovementTime = 0;
         Debug.LogWarning("countdown FINISH+++++++++++++++++");
-        
     }
+
     public string ReleaseRay()
     {
         // Сам луч
@@ -121,26 +140,20 @@ public class CameraFly : MonoBehaviour
         {
             isCounting = true;
             lookingGameObject = hit.transform.gameObject;
-            //Debug.Log(lookingGameObject.name);
-
-            //while (isCounting)
-            //{
-            //    countdown -= Time.deltaTime;
-            //    Debug.LogWarning(countdown);
-            //}
+        }
+        else if (hit.collider.tag == "category" && transform.position != originalPosition)
+        {
+            Debug.Log("category");
+            isCounting = true;
+            //lookingGameObject = hit.transform.gameObject;
         }
         else
         {
+            Debug.Log("else");
             isCounting = false;
             countdownBeforeZoom = timer;
         }
-        //if (countdown <= 0)
-        //{
-        //    isCounting = false;
-        //    countdown = timer;
-        //    Debug.LogWarning("countdown FINISH+++++++++++++++++");
-        //    //transform.position = new Vector3(0, 0, 0);
-        //}
+
         return hit.collider.tag;
     }
 
