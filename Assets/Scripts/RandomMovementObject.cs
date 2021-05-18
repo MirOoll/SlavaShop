@@ -44,6 +44,14 @@ public class RandomMovementObject : MonoBehaviour
         StartCoroutine(DelayChangeMovement());
     }
 
+    private void OnEnable()
+    {
+        startDistance = Vector3.Distance(parent.transform.position, transform.position);
+        startPosition = transform.position;
+
+        StartCoroutine(DelayChangeMovement());
+    }
+
     void Update()
     {
         if (transform.Find("Main Camera"))
@@ -56,11 +64,11 @@ public class RandomMovementObject : MonoBehaviour
             }
             if (isCoroutineStart)
             {
-                startDistance = Vector3.Distance(parent.transform.position, transform.position);
+               startDistance = Vector3.Distance(parent.transform.position, transform.position);
                 startPosition = transform.position;
 
                 StartCoroutine(DelayChangeMovement());
-                isCoroutineStart = false;
+                isCoroutineStart = false; 
             }
 
         }
