@@ -20,6 +20,7 @@ public class CameraFly : MonoBehaviour
     Vector3 originalPosition;
     Vector3 newPosition;
     GameObject lookingGameObject;
+    public GameObject shop;
 
     bool isCounting = false;
     float timer = 2.2f;
@@ -75,15 +76,16 @@ public class CameraFly : MonoBehaviour
                 StartCoroutine(ZoomIn());
                 countdownBeforeZoom = timer;
             }
+
             if (transform.position != originalPosition)
             {
                 Debug.LogError("ZoomOut");
                 StartCoroutine(ZoomOut());
                 countdownBeforeZoom = timer;
             }
-
-
         }
+
+
 
         // перемещение камеры
 
@@ -91,7 +93,7 @@ public class CameraFly : MonoBehaviour
         //transfer += transform.right * Input.GetAxis("Horizontal");
         //transform.position += transfer * speed * Time.deltaTime;
     }
-    
+
     IEnumerator ZoomIn()
     {
         while (currentMovementTime < totalMovementTime)
@@ -107,7 +109,7 @@ public class CameraFly : MonoBehaviour
         }
         currentMovementTime = 0;
         transform.parent = lookingGameObject.transform;
-        Debug.LogWarning("countdown FINISH+++++++++++++++++");   
+        Debug.LogWarning("countdown FINISH+++++++++++++++++");
     }
 
     IEnumerator ZoomOut()
@@ -146,6 +148,16 @@ public class CameraFly : MonoBehaviour
             Debug.Log("category");
             isCounting = true;
             //lookingGameObject = hit.transform.gameObject;
+        }
+        else if (hit.collider.tag == "2")
+        {
+            //isCounting = true;
+
+            Debug.LogWarning("SUKA");
+            Instantiate(shop);
+            shop.transform.LookAt(Camera.main.transform);
+            shop.transform.localPosition = transform.localPosition - new Vector3(0, 0, -1);
+            shop.transform.parent = transform;
         }
         else
         {
